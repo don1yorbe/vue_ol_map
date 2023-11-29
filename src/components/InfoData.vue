@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <p class="fs-3 text-upercase">All Lists: {{ allMoviesCount }}</p>
+        <p class="fs-3 text-upercase">All Lists: {{ allDataCount }}</p>
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
     name: "DataInfo",
     props:{
-        allMoviesCount:{
+        allDataCount:{
             type:Number,
             required:true,
         }
@@ -18,10 +18,10 @@ export default {
 
 <style scoped>
 .box{
-    margin: 2rem;
+    /* margin: 2rem; */
     padding: 1.5rem;
     border-radius: 4px;
     background-color: #fcfaf5;
-    box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.15);
+    /* box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.15); */
 }
 </style>

@@ -1,14 +1,14 @@
 <template>
     <div class="app">
         <div class="content">
-            <InfoData :allMoviesCount="movies.length"/>
+            <InfoData :allDataCount="data.length"/>
             <div class="search-panel">
                 <SearchPanel :updateTernHandler="updateTernHandler"/>
                 <FilterData :updateFilterHandler="updateFilterHandler" :filterName="filter" />
-                <AddData @createMovie="createMovie"/>
+                <AddData @createData="createData"/>
             </div>
             <Data
-                    v-bind:movies="onFilterHandler(onSearchHandler(movies, term), filter)"
+                    v-bind:data="onFilterHandler(onSearchHandler(data, term), filter)"
                     @onToggle="onToggleHandler"
                     @onRemove='onRemoveHandler'/>
             <Map/>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-
+import "ol/ol.css";
 
 import InfoData from "@/components/InfoData.vue";
 import FilterData from "@/components/FilterData.vue";
@@ -36,7 +36,7 @@ export default{
     },
     data() {
         return {
-            movies:[
+            data:[
                 {
                     name:'Toshkent',
                     latitude:69.254631,
@@ -64,11 +64,11 @@ export default{
         }
     },
     methods: {
-        createMovie(item){
-            this.movies.push(item)
+        createData(item){
+            this.data.push(item)
         },
         onToggleHandler({id, prop}){
-            this.movies = this.movies.map(item =>{
+            this.data = this.data.map(item =>{
                 if(item.id == id){
                     return {...item, [prop]: !item[prop]}
                 }
@@ -76,7 +76,7 @@ export default{
             })
         },
         onRemoveHandler(id){
-            this.movies = this.movies.filter(c => c.id !== id)
+            this.data = this.data.filter(c => c.id !== id)
         },
         onSearchHandler(arr, term){
             if(term.length == 0){
@@ -105,10 +105,30 @@ export default{
 </script>
 
 <style>
-.app{
-    height: 100vh;
-    color: #000;
+
+/* #map {
+  margin: 0;
+  padding: 0;
+  height: 500px;
+  padding: 1.5rem;
+} */
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
 }
+#nav {
+  padding: 30px;
+}
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+#nav a.router-link-exact-active {
+  color: #42b983;
+}
+
 .content{
     margin: 2rem;
     padding: 1.5rem;
@@ -117,11 +137,5 @@ export default{
     box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.15);
 }
 .search-panel{
-    /*margin-top: 2rem;*/
-    /*padding: 1.5rem;*/
-    /*background-color: #fcfaf5;*/
-    /*border-radius: 4px;*/
-    /*box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.15);*/
-    /*box-sizing: border-box;*/
 }
 </style>

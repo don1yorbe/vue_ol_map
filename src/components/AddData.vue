@@ -41,8 +41,8 @@
                                         class="new-movie-label"
                                         placeholder="Longitude"
                                         type="number"
-                                        :value="latitude"
-                                        v-on:input="latitude = $event.target.value"/>
+                                        :value="longitude"
+                                        v-on:input="longitude = $event.target.value"/>
                             </div>
 
                             <div class="mb-3">
@@ -62,7 +62,7 @@
                         <PrimaryButton
                                 class="btn-outline-dark"
                                 type="submit"
-                                @click="addMovie">Save</PrimaryButton>
+                                @click="addData">Save</PrimaryButton>
                     </div>
                 </div>
             </div>
@@ -81,16 +81,16 @@ export default {
         }
     },
     methods: {
-        addMovie() {
+        addData() {
             if(!this.name || !this.type) return
-            const newMovie = {
+            const newData = {
                 name: this.name,
                 longitude: this.longitude,
                 latitude: this.latitude,
                 type: this.type,
                 id: Date.now(),
             }
-            this.$emit('createMovie', newMovie) //ona divga ma'lumot jo'natish
+            this.$emit('createData', newData) //ona divga ma'lumot jo'natish
             this.name = ''
             this.longitude = ''
             this.latitude = ''

@@ -1,62 +1,126 @@
 <template>
-    <div class="map"></div>
+    <div id="map"></div>
+    <div id="popup" class="ol-popup">
+      <h3 id="popup-name"></h3>
+      <p id="popup-description"></p>
+    </div>
 </template>
 
 <script>
-/* eslint-disable */
-// import openlayer css for style
-import "ol/ol.css";
-// This is library of openlayer for handle map
-import Map from "ol/Map";
-import View from "ol/View";
-import { defaults as defaultControls, ScaleLine } from "ol/control";
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import {OSM, Vector as VectorSource} from 'ol/source';
+import 'ol/ol.css';
+import { Map, View } from 'ol';
+import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
+import OSM from 'ol/source/OSM';
+import { fromLonLat } from 'ol/proj';
+import { Vector as VectorSource } from 'ol/source';
+import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
+import { Point } from 'ol/geom';
+import Feature from 'ol/Feature';
+import Overlay from 'ol/Overlay';
+
 export default {
-    name:'Map',
-    async mounted() {
-        await this.initiateMap();
-    },
-    methods: {
-        initiateMap() {
-            // create vector layer
-            var source = new VectorSource();
-            var vector = new VectorLayer({
-                source: source
-            });
-            // create title layer
-            var raster = new TileLayer({
-                source: new OSM(),
-            });
-            // create map with 2 layer
-            var map = new Map({
-                controls: defaultControls().extend([
-                    new ScaleLine({
-                        units: "degrees",
-                    }),
-                ]),
-                target: "map",
-                layers: [raster, vector],
-                view: new View({
-                    projection: "EPSG:4326",
-                    center: [0, 0],
-                    zoom: 2,
-                }),
-            });
-        },
-    },
+  name:`Map`,
+  mounted() {
+    this.map = new Map({
+      target: 'map',
+      layers: [
+        new TileLayer({
+          source: new OSM()
+        })
+      ],
+      view: new View({
+        center: fromLonLat([0, 0]),
+        zoom: 2
+      })
+    });
+
+    const points = [
+      { coordinates: [0, 0], name: 'Point A', description: 'This is Point A' },
+      { coordinates: [-45, 30], name: 'Point B', description: 'This is Point B' },
+      { coordinates: [60, -20], name: 'Point C', description: 'This is Point C' }
+    ];
+
+    const vectorSource = new VectorSource();
+
+    points.forEach(point => {
+      const feature = new Feature({
+        geometry: new Point(fromLonLat(point.coordinates)),
+        name: point.name,
+        description: point.description
+      });
+      vectorSource.addFeature(feature);
+    });
+
+    const vectorLayer = new VectorLayer({
+      source: vectorSource,
+      style: new Style({
+        image: new CircleStyle({
+          radius: 6,
+          fill: new Fill({ color: 'red' }),
+          stroke: new Stroke({
+            color: 'white',
+            width: 2
+          })
+        })
+      })
+    });
+
+    this.map.addLayer(vectorLayer);
+
+    // Create a popup overlay
+    const popupOverlay = new Overlay({
+      element: document.getElementById('popup'),
+      autoPan: true,
+      autoPanAnimation: {
+        duration: 250
+      }
+    });
+
+    this.map.addOverlay(popupOverlay);
+
+    // Display popup on click event
+    this.map.on('click', (event) => {
+      const feature = this.map.forEachFeatureAtPixel(event.pixel, (feature) => feature);
+      if (feature) {
+        const coordinates = feature.getGeometry().getCoordinates();
+        const name = feature.get('name');
+        const description = feature.get('description');
+        popupOverlay.setPosition(coordinates);
+        document.getElementById('popup-name').textContent = name;
+        document.getElementById('popup-description').textContent = description;
+        popupOverlay.getElement().style.display = 'block';
+      } else {
+        popupOverlay.getElement().style.display = 'none';
+      }
+    });
+  }
 };
 </script>
 
 <style scoped>
-.map{
-    margin-top: 2rem;
-    margin: 2rem;
-    padding: 1.5rem;
-    background-color: #fcfaf5;
-    border-radius: 4px;
-    box-shadow: 15px 15px 15px rgb(0, 0, 0, 0.15);
-    background-color: #fcfaf5;
-    box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.15);
+#map {
+  margin: 0;
+  padding: 0;
+  height: 500px;
+  padding: 1.5rem;
+}
+
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 150px;
+}
+
+.ol-popup h3 {
+  margin-top: 0;
+}
+
+.ol-popup p {
+  margin-bottom: 0;
 }
 </style>

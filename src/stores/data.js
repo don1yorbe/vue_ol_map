@@ -40,5 +40,42 @@ export const useDataStore = defineStore('DataStore',{
             this.movies.forEach(movie => coordinates.push([movie.latitude, movie.longitude]));
             return coordinates;
         },
+
+        createData(item){
+            this.data.push(item)
+        },
+        onToggleHandler({id, prop}){
+            this.data = this.data.map(item =>{
+                if(item.id == id){
+                    return {...item, [prop]: !item[prop]}
+                }
+                return item
+            })
+        },
+        onRemoveHandler(id){
+            this.data = this.data.filter(c => c.id !== id)
+        },
+        onSearchHandler(arr, term){
+            if(term.length == 0){
+                return arr
+            }
+            return arr.filter(c => c.name.toLowerCase().indexOf(term) > -1)
+        },
+        onFilterHandler(arr, filter){
+            switch(filter){
+                case 'popular':
+                    return arr.filter(c => c.type === 1)
+                case 'mostViewers':
+                    return arr.filter(c => c.type > 1)
+                default:
+                    return arr
+            }
+        },
+        updateTernHandler(term){
+            this.term = term
+        },
+        updateFilterHandler(filter){
+            this.filter = filter
+        }
     },
 })

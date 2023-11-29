@@ -1,13 +1,13 @@
 <template>
     <li class="list-group-item d-flex justify-content-between">
 
-        <span class="list-group-item-label">{{movie.name}}</span>
-        <input type="number" class="list-group-item-input" v-bind:value="movie.longitude" />
-        <input type="number" class="list-group-item-input" v-bind:value="movie.latitude" />
-        <input type="number" class="list-group-item-input" v-bind:value="movie.type" />
+        <span class="list-group-item-label">{{dat.name}}</span>
+        <input type="number" class="list-group-item-input" v-bind:value="dat.longitude" />
+        <input type="number" class="list-group-item-input" v-bind:value="dat.latitude" />
+        <input type="number" class="list-group-item-input" v-bind:value="dat.type" />
 
         <div class="d-flex justify-content-center align-items-center">
-            <button type="button" class="btn-trash btn-sm" @click="$emit('onRemove', movie.id)">
+            <button type="button" class="btn-trash btn-sm" @click="$emit('onRemove', dat.id)">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
@@ -17,7 +17,7 @@
 <script>
 export default {
     props: {
-        movie: {
+        dat: {
             type:Object,
             required: true,
         },
