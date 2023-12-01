@@ -1,9 +1,9 @@
 <template>
-    <div id="map"></div>
-    <div id="popup" class="ol-popup">
-      <h3 id="popup-name"></h3>
-      <p id="popup-description"></p>
-    </div>
+  <div id="map"></div>
+  <div id="popup" class="ol-popup">
+    <h3 id="popup-name"></h3>
+    <p id="popup-description"></p>
+  </div>
 </template>
 
 <script>
@@ -17,9 +17,10 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 import { Point } from 'ol/geom';
 import Feature from 'ol/Feature';
 import Overlay from 'ol/Overlay';
+import { useDataStore } from "@/stores/data"
 
 export default {
-  name:`Map`,
+  name: `Map`,
   mounted() {
     this.map = new Map({
       target: 'map',
@@ -34,14 +35,12 @@ export default {
       })
     });
 
-    const points = [
-      { coordinates: [0, 0], name: 'Point A', description: 'This is Point A' },
-      { coordinates: [-45, 30], name: 'Point B', description: 'This is Point B' },
-      { coordinates: [60, -20], name: 'Point C', description: 'This is Point C' }
-    ];
 
     const vectorSource = new VectorSource();
 
+    const store = useDataStore()
+    const points = store.getCoordinates()
+    console.log(points);
     points.forEach(point => {
       const feature = new Feature({
         geometry: new Point(fromLonLat(point.coordinates)),
